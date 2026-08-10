@@ -2,17 +2,18 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 24px;
+  padding: 32px;
 }
 
 .history {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding-right: 8px;
+  padding-right: 12px;
+  scroll-behavior: smooth;
 }
 
 .history::-webkit-scrollbar {
@@ -20,7 +21,7 @@
 }
 
 .history::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: var(--surface-border);
   border-radius: 4px;
 }
 
@@ -31,58 +32,69 @@
 
 .inputRow {
   display: flex;
-  gap: 12px;
-  background: var(--bg-main);
-  padding: 8px;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s ease;
+  gap: 16px;
+  background: var(--surface-bg);
+  padding: 12px;
+  border-radius: 99px; /* Pill shape */
+  border: 2px solid transparent;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .inputRow:focus-within {
-  border-color: var(--accent-primary);
+  border-color: var(--accent-purple);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+  background: #ffffff;
 }
 
 .input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 8px 24px;
   background: transparent;
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .input::placeholder {
   color: var(--text-muted);
+  font-weight: 400;
 }
 
 .button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent-primary);
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
   color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  padding: 12px 32px;
+  border-radius: 99px;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .button:hover:not(:disabled) {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.5);
 }
 
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: scale(1);
+  box-shadow: none;
 }
 
 .error {
   color: #EF4444;
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 16px;
+  font-size: 1rem;
   text-align: center;
+  font-weight: 500;
 }

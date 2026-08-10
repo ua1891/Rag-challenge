@@ -1,10 +1,10 @@
 .panel {
-  background: var(--bg-surface);
-  backdrop-filter: var(--glass-backdrop);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: var(--glass-shadow);
+  background: var(--surface-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--surface-border);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow-soft);
   color: var(--text-primary);
 }
 
@@ -12,52 +12,65 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.1);
 }
 
 .header h4 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .refreshButton {
-  padding: 6px 12px;
-  font-size: 13px;
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  cursor: pointer;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background-color: var(--bg-color);
+  color: var(--accent-blue);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .refreshButton:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--accent-blue);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .noteRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  font-size: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.noteRow:hover {
+  transform: translateX(4px);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
 .noteRow:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .empty {
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 1rem;
   text-align: center;
-  padding: 16px 0;
+  padding: 24px 0;
+  font-weight: 500;
 }
 
 .noteActions {
@@ -67,28 +80,30 @@
 }
 
 .chunkCount {
-  color: var(--text-secondary);
-  font-size: 13px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 4px 8px;
-  border-radius: 4px;
+  color: var(--accent-purple);
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(139, 92, 246, 0.1);
+  padding: 6px 10px;
+  border-radius: 6px;
 }
 
 .deleteButton {
-  padding: 6px 10px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
   background-color: rgba(239, 68, 68, 0.1);
   color: #EF4444;
-  border: 1px solid rgba(239, 68, 68, 0.2);
-  border-radius: 6px;
-  cursor: pointer;
+  border: none;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .deleteButton:hover:not(:disabled) {
-  background-color: rgba(239, 68, 68, 0.2);
-  border-color: rgba(239, 68, 68, 0.4);
+  background-color: #EF4444;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .deleteButton:disabled {
@@ -100,84 +115,90 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.25s ease-out;
 }
 
 .modalContent {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  max-width: 400px;
+  background: #ffffff;
+  border: 1px solid rgba(255,255,255,0.8);
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.15);
+  max-width: 420px;
   width: 90%;
   text-align: left;
-  animation: slideUp 0.3s ease-out;
+  animation: modalBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalBounce {
+  0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .modalContent h4 {
-  margin: 0 0 12px 0;
-  font-size: 18px;
-  color: #F8FAFC;
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
 }
 
 .modalContent p {
   color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.5;
-  margin-bottom: 24px;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 32px;
 }
 
 .modalContent strong {
   color: var(--text-primary);
+  font-weight: 600;
 }
 
 .modalActions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 16px;
 }
 
 .cancelButton {
-  padding: 8px 16px;
-  background: transparent;
+  padding: 10px 20px;
+  background: var(--bg-color);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background 0.2s;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
 }
 
 .cancelButton:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #e2e8f0;
 }
 
 .confirmButton {
-  padding: 8px 16px;
-  background: #EF4444;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
   color: white;
   border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background 0.2s;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .confirmButton:hover {
-  background: #DC2626;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
