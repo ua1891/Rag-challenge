@@ -1,0 +1,62 @@
+.panel {
+  margin-top: 24px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.refreshButton {
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.noteRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.empty {
+  color: #888;
+  font-size: 14px;
+}
+
+.noteActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chunkCount {
+  color: #666;
+}
+
+.deleteButton {
+  padding: 4px 8px;
+  font-size: 12px;
+  background-color: #ffecec;
+  color: #cc0000;
+  border: 1px solid #ffcccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #ffcccc;
+}
+
+.deleteButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
