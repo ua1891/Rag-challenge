@@ -1,13 +1,15 @@
 from embeddings import generate_embeddings
-from Store import collection
+from Store import get_collection
 
 def retrieve_similar_chunks(query, top_k):
     query_embedding = generate_embeddings(query)
+    collection = get_collection()
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=top_k
     )
     return results["documents"][0], results["distances"][0]
+
 
 if __name__ == "__main__":
     query = "Why does a model do badly on new data even though it did well during training?"
