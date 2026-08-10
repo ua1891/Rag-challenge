@@ -24,12 +24,22 @@ def ask_question_get(question: str, top_k: int = 3):
 Router=APIRouter(prefix="/Upload", tags=["Upload"])
 @Router.post("/upload")
 def upload_file(file: UploadFile):
+    if file.content_type != "text/plain" and not file.filename.lower().endswith(".txt"):
+        raise HTTPException(status_code=400, detail="Only .txt (text/plain) files are allowed.")
+        
     try:
-        contents = file.file.read().decode("utf-8")
+        raw_contents = file.file.read()
+        try:
+            contents = raw_contents.decode("utf-8")
+        except UnicodeDecodeError:
+            raise HTTPException(status_code=400, detail="File must be a valid UTF-8 encoded text file.")
+            
         Chunk_Size = 500
         Overlap = 50
         Chunks = chunk_document(contents, Chunk_Size, Overlap)
         Store_Chunks(Chunks, filename=file.filename)
         return {"message": f"File '{file.filename}' uploaded and processed successfully."}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File upload error: {str(e)}")
