@@ -1,31 +1,47 @@
 const BASE_URL = "http://localhost:8000";
 
-export function uploadFile(file, onProgress) {
-  return new Promise((resolve, reject) => {
-    const formData = new FormData();
-    formData.append("file", file);
+export async function uploadFile(file, onProgress) {
+  const formData = new FormData();
+  formData.append("file", file);
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${BASE_URL}/Upload/upload`, true);
-
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable && onProgress) {
-        const percentComplete = (event.loaded / event.total) * 100;
-        onProgress(percentComplete);
-      }
-    };
-
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        reject(new Error(`Upload failed: ${xhr.status}`));
-      }
-    };
-
-    xhr.onerror = () => reject(new Error("Network error during upload"));
-    xhr.send(formData);
+  const res = await fetch(`${BASE_URL}/Upload/upload`, {
+    method: "POST",
+    body: formData,
   });
+
+  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let lastMessage = null;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    
+    const chunk = decoder.decode(value, { stream: true });
+    const lines = chunk.split('\n').filter(l => l.trim() !== '');
+    
+    for (const line of lines) {
+      try {
+        const data = JSON.parse(line);
+        if (data.status === 'processing') {
+          if (onProgress) onProgress(data.progress);
+        } else if (data.status === 'success') {
+          lastMessage = data;
+        } else if (data.status === 'error') {
+          throw new Error(data.message);
+        }
+      } catch (e) {
+        if (e.message !== "Unexpected end of JSON input" && !e.message.startsWith("Unexpected token")) {
+            throw e;
+        }
+      }
+    }
+  }
+  
+  if (!lastMessage) throw new Error("Upload stream ended without success message");
+  return lastMessage;
 }
 
 export async function askQuestion(question, topK = 3) {

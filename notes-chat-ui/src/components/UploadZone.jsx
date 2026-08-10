@@ -15,7 +15,7 @@ export default function UploadZone({ onUploadSuccess }) {
         setStatus({ 
           type: "loading", 
           progress: percent, 
-          message: percent >= 100 ? "Processing and Embedding..." : `Uploading ${file.name}...` 
+          message: percent >= 100 ? "Finalizing..." : `Processing and Embedding...` 
         });
       });
       setStatus({ type: "success", message: result.message, progress: 100 });
