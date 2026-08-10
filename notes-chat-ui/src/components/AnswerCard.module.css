@@ -1,0 +1,16 @@
+.card {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.sourceItem {
+  margin-bottom: 8px;
+}
+
+.sourceText {
+  white-space: pre-wrap;
+  font-size: 13px;
+  color: #555;
+}
