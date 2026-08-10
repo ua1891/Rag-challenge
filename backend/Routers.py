@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
+import json
 from Schema import AskRequest, AskResponse
 from Generate_Answer import generate_answer
-from Store import Store_Chunks, list_stored_notes, delete_note_by_filename
+from Store import Store_Chunks, Store_Chunks_Stream, list_stored_notes, delete_note_by_filename
 from Chunking import chunk_document
 router = APIRouter(prefix="/ask", tags=["Ask"])
 
@@ -37,8 +39,18 @@ def upload_file(file: UploadFile):
         Chunk_Size = 500
         Overlap = 50
         Chunks = chunk_document(contents, Chunk_Size, Overlap)
-        Store_Chunks(Chunks, filename=file.filename)
-        return {"message": f"File '{file.filename}' uploaded and processed successfully."}
+        
+        def process_and_stream():
+            try:
+                for current, total in Store_Chunks_Stream(Chunks, filename=file.filename):
+                    progress = int((current / total) * 100)
+                    yield json.dumps({"status": "processing", "progress": progress}) + "\n"
+                yield json.dumps({"status": "success", "message": f"File '{file.filename}' uploaded and processed successfully."}) + "\n"
+            except Exception as e:
+                yield json.dumps({"status": "error", "message": str(e)}) + "\n"
+                
+        return StreamingResponse(process_and_stream(), media_type="application/x-ndjson")
+        
     except HTTPException:
         raise
     except Exception as e:

@@ -47,6 +47,32 @@ def Store_Chunks(Chunks, filename: str):
     print(f"Stored {len(Chunks)} chunks in Chroma.")
 
 
+def Store_Chunks_Stream(Chunks, filename: str):
+    collection = get_collection()
+    documents = []
+    embeddings = []
+    ids = []
+    metadatas = []
+    total = len(Chunks)
+
+    for i, chunk in enumerate(Chunks, start=1):
+        embedding = generate_embeddings(chunk)
+        documents.append(chunk)
+        embeddings.append(embedding)
+        ids.append(f"{filename}_chunk_{i}")
+        metadatas.append({"filename": filename, "chunk_index": i})
+        print(f"Embedded chunk {i}/{total}")
+        yield i, total
+
+    collection.add(
+        documents=documents,
+        embeddings=embeddings,
+        ids=ids,
+        metadatas=metadatas,
+    )
+    print(f"Stored {total} chunks in Chroma.")
+
+
 def list_stored_notes():
     results = get_collection().get(include=["metadatas"])
     summary = {}
