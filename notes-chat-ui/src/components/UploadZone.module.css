@@ -1,16 +1,47 @@
 .dropzone {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
   padding: 40px;
   text-align: center;
-  background: #fafafa;
+  background: var(--bg-surface);
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition: all 0.3s ease;
+  backdrop-filter: var(--glass-backdrop);
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.dropzone:hover {
+  background: var(--bg-surface-hover);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .dropzoneActive {
-  border-color: #4f46e5;
-  background: #eef2ff;
+  border-color: var(--accent-primary);
+  background: rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.uploadIcon {
+  color: var(--accent-primary);
+  margin-bottom: 16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+.uploadText {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .hiddenInput {
@@ -18,9 +49,13 @@
 }
 
 .statusSuccess {
-  color: green;
+  color: #10B981; /* Emerald */
+  margin-top: 12px;
+  font-weight: 500;
 }
 
 .statusError {
-  color: red;
+  color: #EF4444; /* Red */
+  margin-top: 12px;
+  font-weight: 500;
 }
