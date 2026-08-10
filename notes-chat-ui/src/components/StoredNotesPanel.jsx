@@ -6,6 +6,7 @@ export default function StoredNotesPanel({ refreshKey }) {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [noteToDelete, setNoteToDelete] = useState(null); // The filename of the note to delete
 
   const fetchNotes = useCallback(async () => {
     setLoading(true);
@@ -25,16 +26,22 @@ export default function StoredNotesPanel({ refreshKey }) {
     fetchNotes();
   }, [fetchNotes, refreshKey]);
 
-  const handleDelete = async (filename) => {
-    if (!window.confirm(`Are you sure you want to delete ${filename}?`)) return;
+  const confirmDelete = async () => {
+    if (!noteToDelete) return;
     setLoading(true);
     try {
-      await deleteNote(filename);
+      await deleteNote(noteToDelete);
+      setNoteToDelete(null);
       await fetchNotes(); // refresh list after deletion
     } catch (err) {
       setError(err.message);
       setLoading(false);
+      setNoteToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setNoteToDelete(null);
   };
 
   return (
@@ -46,7 +53,7 @@ export default function StoredNotesPanel({ refreshKey }) {
         </button>
       </div>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "#EF4444", fontSize: "14px" }}>{error}</p>}
       {!loading && notes.length === 0 && !error && (
         <p className={styles.empty}>No notes stored yet — upload a file to get started.</p>
       )}
@@ -57,7 +64,7 @@ export default function StoredNotesPanel({ refreshKey }) {
           <div className={styles.noteActions}>
             <span className={styles.chunkCount}>{note.chunk_count} chunks</span>
             <button 
-              onClick={() => handleDelete(note.filename)} 
+              onClick={() => setNoteToDelete(note.filename)} 
               className={styles.deleteButton}
               disabled={loading}
             >
@@ -66,6 +73,24 @@ export default function StoredNotesPanel({ refreshKey }) {
           </div>
         </div>
       ))}
+
+      {/* Custom Confirmation Modal */}
+      {noteToDelete && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h4>Delete Note</h4>
+            <p>Are you sure you want to delete <strong>{noteToDelete}</strong>? This action cannot be undone.</p>
+            <div className={styles.modalActions}>
+              <button className={styles.cancelButton} onClick={cancelDelete} disabled={loading}>
+                Cancel
+              </button>
+              <button className={styles.confirmButton} onClick={confirmDelete} disabled={loading}>
+                {loading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
