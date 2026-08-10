@@ -28,20 +28,42 @@ def Store_Chunks(Chunks, filename: str):
     documents = []
     embeddings = []
     ids = []
+    metadatas = []
 
     for i, chunk in enumerate(Chunks, start=1):
         embedding = generate_embeddings(chunk)
         documents.append(chunk)
         embeddings.append(embedding)
         ids.append(f"{filename}_chunk_{i}")
+        metadatas.append({"filename": filename, "chunk_index": i})
         print(f"Embedded chunk {i}/{len(Chunks)}")
 
     collection.add(
         documents=documents,
         embeddings=embeddings,
-        ids=ids
+        ids=ids,
+        metadatas=metadatas,
     )
     print(f"Stored {len(Chunks)} chunks in Chroma.")
+
+
+def list_stored_notes():
+    results = get_collection().get(include=["metadatas"])
+    summary = {}
+    if results.get("metadatas"):
+        for meta in results["metadatas"]:
+            fname = meta.get("filename", "unknown") if meta else "unknown"
+            summary[fname] = summary.get(fname, 0) + 1
+
+    return [
+        {"filename": fname, "chunk_count": count}
+        for fname, count in summary.items()
+    ]
+
+
+def delete_note_by_filename(filename: str):
+    collection = get_collection()
+    collection.delete(where={"filename": filename})
 
 
 if __name__ == "__main__":
