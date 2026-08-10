@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, UploadFile
 from Schema import AskRequest, AskResponse
 from Generate_Answer import generate_answer
-from Store import Store_Chunks
+from Store import Store_Chunks, list_stored_notes, delete_note_by_filename
 from Chunking import chunk_document
 router = APIRouter(prefix="/ask", tags=["Ask"])
 
@@ -43,3 +43,21 @@ def upload_file(file: UploadFile):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"File upload error: {str(e)}")
+
+
+@Router.get("/notes")
+def get_stored_notes():
+    try:
+        notes = list_stored_notes()
+        return {"notes": notes, "total_files": len(notes)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to list notes: {str(e)}")
+
+
+@Router.delete("/notes/{filename}")
+def delete_note(filename: str):
+    try:
+        delete_note_by_filename(filename)
+        return {"message": f"Successfully deleted {filename}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete note: {str(e)}")
