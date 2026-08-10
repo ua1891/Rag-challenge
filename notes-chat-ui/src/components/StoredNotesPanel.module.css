@@ -1,59 +1,94 @@
 .panel {
-  margin-top: 24px;
-  padding: 16px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  background: #fafafa;
+  background: var(--bg-surface);
+  backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--glass-shadow);
+  color: var(--text-primary);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .refreshButton {
-  padding: 4px 10px;
+  padding: 6px 12px;
   font-size: 13px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .noteRow {
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   font-size: 14px;
 }
 
+.noteRow:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 .empty {
-  color: #888;
+  color: var(--text-muted);
   font-size: 14px;
+  text-align: center;
+  padding: 16px 0;
 }
 
 .noteActions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .chunkCount {
-  color: #666;
+  color: var(--text-secondary);
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
 .deleteButton {
-  padding: 4px 8px;
+  padding: 6px 10px;
   font-size: 12px;
-  background-color: #ffecec;
-  color: #cc0000;
-  border: 1px solid #ffcccc;
-  border-radius: 4px;
+  font-weight: 600;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .deleteButton:hover:not(:disabled) {
-  background-color: #ffcccc;
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .deleteButton:disabled {
