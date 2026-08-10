@@ -1,0 +1,15 @@
+# RAG Challenge – backend dependencies
+#
+# Pinned with >= (floor) rather than == (exact) because:
+#   - These packages follow semantic versioning; minor/patch bumps are safe.
+#   - Exact pins make dependency resolution painful when other packages also
+#     depend on these (e.g. chromadb pulls in pydantic, uvicorn, etc.).
+#   - If you need fully reproducible deploys, run `pip freeze > requirements.lock`
+#     and use that in Docker instead of this file.
+
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.7.0
+python-dotenv>=1.0.0
+google-genai>=0.8.0
+chromadb>=0.5.0
