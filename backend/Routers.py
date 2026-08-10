@@ -12,6 +12,14 @@ def ask_question(request: AskRequest):
         return AskResponse(answer=answer, sources=sources)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Rag error: {str(e)}")
+
+@router.get("/", response_model=AskResponse)
+def ask_question_get(question: str, top_k: int = 3):
+    try:
+        answer, sources = generate_answer(question, top_k)
+        return AskResponse(answer=answer, sources=sources)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Rag error: {str(e)}")
     
 Router=APIRouter(prefix="/Upload", tags=["Upload"])
 @Router.post("/upload")
