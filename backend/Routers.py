@@ -12,28 +12,28 @@ def ask_question(request: AskRequest):
         return AskResponse(answer=answer, sources=sources)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Rag error: {str(e)}")
-
-@router.get("/", response_model=AskResponse)
-def ask_question_get(question: str, top_k: int = 3):
-    try:
-        answer, sources = generate_answer(question, top_k)
-        return AskResponse(answer=answer, sources=sources)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Rag error: {str(e)}")
     
 Router=APIRouter(prefix="/Upload", tags=["Upload"])
 @Router.post("/upload")
 def upload_file(file: UploadFile):
+    MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
+
     if file.content_type != "text/plain" and not file.filename.lower().endswith(".txt"):
         raise HTTPException(status_code=400, detail="Only .txt (text/plain) files are allowed.")
         
+    if getattr(file, 'size', 0) and file.size > MAX_FILE_SIZE:
+        raise HTTPException(status_code=413, detail="File too large. Maximum allowed size is 5MB.")
+
     try:
         raw_contents = file.file.read()
+        if len(raw_contents) > MAX_FILE_SIZE:
+            raise HTTPException(status_code=413, detail="File too large. Maximum allowed size is 5MB.")
+
         try:
             contents = raw_contents.decode("utf-8")
         except UnicodeDecodeError:
             raise HTTPException(status_code=400, detail="File must be a valid UTF-8 encoded text file.")
-            
+
         Chunk_Size = 500
         Overlap = 50
         Chunks = chunk_document(contents, Chunk_Size, Overlap)
