@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { uploadFile } from "../api";
 import styles from "./UploadZone.module.css";
 
-export default function UploadZone() {
+export default function UploadZone({ onUploadSuccess }) {
   const [isDragging, setIsDragging] = useState(false);
   const [status, setStatus] = useState(null); // { type: 'success'|'error'|'loading', message }
 
@@ -12,10 +12,11 @@ export default function UploadZone() {
     try {
       const result = await uploadFile(file);
       setStatus({ type: "success", message: result.message });
+      onUploadSuccess?.();
     } catch (err) {
       setStatus({ type: "error", message: err.message });
     }
-  }, []);
+  }, [onUploadSuccess]);
 
   const onDrop = (e) => {
     e.preventDefault();
