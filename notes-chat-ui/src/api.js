@@ -1,15 +1,31 @@
 const BASE_URL = "http://localhost:8000";
 
-export async function uploadFile(file) {
-  const formData = new FormData();
-  formData.append("file", file);
+export function uploadFile(file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  const res = await fetch(`${BASE_URL}/Upload/upload`, {
-    method: "POST",
-    body: formData,
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${BASE_URL}/Upload/upload`, true);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable && onProgress) {
+        const percentComplete = (event.loaded / event.total) * 100;
+        onProgress(percentComplete);
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        reject(new Error(`Upload failed: ${xhr.status}`));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("Network error during upload"));
+    xhr.send(formData);
   });
-  if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
-  return res.json();
 }
 
 export async function askQuestion(question, topK = 3) {
